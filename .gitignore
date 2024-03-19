@@ -1,0 +1,8 @@
+__pycache__/
+figures/
+configs/local_*
+data/
+checkpoint/
+*.npy
+*.gz
+*-ubyte
