@@ -29,7 +29,7 @@ parser.add_argument('-f', '--file',
                     help='Path for input file. First line should contain number of lines to search in')
 
 ## Dataset
-parser.add_argument('--dataset', type=str, choices=['mnist', 'cifar100'],
+parser.add_argument('--dataset', type=str, choices=['mnist', 'cifar10', 'cifar100'],
                     default='mnist', help='dataset (default: mnist)')
 parser.add_argument('--seed', type=int, default=0, help='random seed (default: 0)')
 
@@ -114,22 +114,16 @@ if args.cuda:
 #########################################################
 ## Read Data
 #########################################################
-if args.dataset == "mnist":
-  print("Loading mnist dataset...")
-  # Download or load downloaded MNIST dataset
-  train_dataset = datasets.MNIST('./data/mnist', train=True, download=True, transform=transforms.ToTensor())
-  test_dataset = datasets.MNIST('./data/mnist', train=False, transform=transforms.ToTensor())
-elif args.dataset == "cifar100":
-  print("Loading cifar100 dataset...")
-  transform = transforms.Compose([
-    transforms.ToTensor(),
-    # transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-  ])
-  # Download CIFAR-100 dataset
-  train_dataset = datasets.CIFAR100(root='./data/cifar100', train=True, download=True, transform=transform)
-  test_dataset = datasets.CIFAR100(root='./data/cifar100', train=False, download=True, transform=transform)
+dataset_dict = {
+    'mnist': datasets.MNIST,
+    'cifar10': datasets.CIFAR10,
+    'cifar100': datasets.CIFAR100
+}
 
-
+print(f"Loading {args.dataset} dataset...")
+# Download or load downloaded MNIST dataset
+train_dataset = dataset_dict[args.dataset](f'./data/{args.dataset}', train=True, download=True, transform=transforms.ToTensor())
+test_dataset = dataset_dict[args.dataset](f'./data/{args.dataset}', train=False, transform=transforms.ToTensor())
 
 #########################################################
 ## Data Partition
